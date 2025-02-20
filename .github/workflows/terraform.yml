@@ -24,7 +24,7 @@ jobs:
         with:
           aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_region: ${{ variables.AWS_REGION }}
+          aws_region: "us-west-1"
 
       # Run Terraform init from a specific directory
       - name: Terraform Init

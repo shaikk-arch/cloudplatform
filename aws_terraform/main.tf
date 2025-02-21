@@ -2,19 +2,6 @@ provider "aws" {
   region = "us-west-1"
 }
 
-# Retrieve the default VPC
-data "aws_vpc" "default" {
-  default = true
-}
-
-# Retrieve the subnets associated with the default VPC
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
-
 # Reference the existing ECR repository
 data "aws_ecr_repository" "my_ecr" {
   name = "my-flask-app"
@@ -22,7 +9,7 @@ data "aws_ecr_repository" "my_ecr" {
 
 # Create IAM role for ECS tasks to interact with ECR
 resource "aws_iam_role" "ecs_task_role" {
-  name = "ecs-task-role-${random_string.suffix.result}"
+  name = "ecs-task-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -36,12 +23,6 @@ resource "aws_iam_role" "ecs_task_role" {
       }
     ]
   })
-}
-
-# Random string for unique IAM role naming
-resource "random_string" "suffix" {
-  length  = 8
-  special = false
 }
 
 # Create IAM policy for admin rights (full access to all AWS resources)
@@ -74,21 +55,9 @@ resource "aws_iam_role_policy" "ecs_task_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer"
-        ]
+        Action = "*"
         Effect   = "Allow"
         Resource = "*"
-      },
-      {
-        Action   = [
-          "logs:CreateLogStream",
-          "logs:PutLogEvents"
-        ]
-        Effect   = "Allow"
-        Resource = "arn:aws:logs:us-west-1:123456789012:log-group:/ecs/flask-app-logs:*"
       }
     ]
   })
@@ -103,7 +72,7 @@ resource "aws_ecs_cluster" "flask_app_cluster" {
 resource "aws_security_group" "ecs_sg" {
   name        = "flask-app-sg-new"
   description = "Allow HTTP traffic on port 5000"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = "vpc-0461e865c5a2055c5"  # Your VPC ID
 
   ingress {
     from_port   = 5000
@@ -153,7 +122,14 @@ resource "aws_ecs_service" "flask_ecs_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = data.aws_subnets.default.ids
+    subnets          = [
+      "subnet-01b120aa2483e220a",
+      "subnet-0f3af6c61caf61983",
+      "subnet-0ac62e963c443c7b2",
+      "subnet-0fffd40e39db04651",
+      "subnet-08c72b3f56e7ff52f",
+      "subnet-0515a928de6d41455"
+    ]
     security_groups  = [aws_security_group.ecs_sg.id]
     assign_public_ip = true
   }
@@ -182,15 +158,24 @@ resource "aws_cloudwatch_metric_alarm" "flask_log_alarm" {
   }
 
   actions_enabled = true
-  alarm_actions   = [data.aws_sns_topic.my_sns.arn]
-}
-
-# Retrieve the SNS Topic ARN for CloudWatch Alarms
-data "aws_sns_topic" "my_sns" {
-  name = "MySNS"
+  alarm_actions   = ["arn:aws:sns:us-west-1:058264462530:MySNS"]
 }
 
 # Optional: Output ECS cluster and service details
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.flask_app_cluster.name
+}
+
+output "ecs_service_name" {
+  value = aws_ecs_service.flask_ecs_service.name
+}
+
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+# Output ECS cluster and service details
 output "ecs_cluster_name" {
   value = aws_ecs_cluster.flask_app_cluster.name
 }

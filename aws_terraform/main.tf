@@ -72,7 +72,7 @@ resource "aws_ecs_cluster" "flask_app_cluster" {
 resource "aws_subnet" "public_subnet_1" {
   vpc_id                  = "vpc-0f4c5b29145a2ac73"  # Your VPC ID
   cidr_block              = "10.0.1.0/24"            # Subnet CIDR block
-  availability_zone       = "us-west-1a"              # Availability zone
+  availability_zone       = "us-west-1"              # Availability zone
   map_public_ip_on_launch = true                      # Assign public IPs to instances launched in this subnet
   tags = {
     Name = "Public Subnet 1"
@@ -82,7 +82,7 @@ resource "aws_subnet" "public_subnet_1" {
 resource "aws_subnet" "public_subnet_2" {
   vpc_id                  = "vpc-0f4c5b29145a2ac73"  # Your VPC ID
   cidr_block              = "10.0.2.0/24"            # Subnet CIDR block
-  availability_zone       = "us-west-1b"              # Availability zone
+  availability_zone       = "us-west-1"              # Availability zone
   map_public_ip_on_launch = true                      # Assign public IPs to instances launched in this subnet
   tags = {
     Name = "Public Subnet 2"

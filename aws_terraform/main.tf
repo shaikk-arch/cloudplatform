@@ -88,7 +88,7 @@ resource "aws_iam_role_policy" "ecs_task_policy" {
           "logs:PutLogEvents"
         ]
         Effect   = "Allow"
-        Resource = "arn:aws:logs:us-east-1:123456789012:log-group:/ecs/flask-app-logs:*"
+        Resource = "arn:aws:logs:us-west-1:123456789012:log-group:/ecs/flask-app-logs:*"
       }
     ]
   })

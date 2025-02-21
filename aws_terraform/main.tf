@@ -68,22 +68,26 @@ resource "aws_ecs_cluster" "flask_app_cluster" {
   name = "flask-app-cluster"
 }
 
-# resource "aws_ecs_service" "flask_ecs_service" {
-  name            = "flask-app-service"
-  cluster         = aws_ecs_cluster.flask_app_cluster.id
-  task_definition = aws_ecs_task_definition.flask_task_definition.arn
-  desired_count   = 1
+# Create a new security group (allow HTTP traffic on port 5000)
+resource "aws_security_group" "ecs_sg" {
+  name        = "flask-app-sg-new"
+  description = "Allow HTTP traffic on port 5000"
+  vpc_id      = "vpc-0e726e990716c0f63"  # Your VPC ID
 
-  network_configuration {
-    subnets = [
-      "vpc-subnet-public1-us-west-1b",  # Public subnet ID
-      "vpc-subnet-private1-us-west-1b"  # Private subnet ID
-    ]
-    assign_public_ip = true
+  ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]  # Allow all IPs to access port 5000 (change for more restriction)
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-
 
 # Define the ECS task definition using the Docker image from the existing ECR repository
 resource "aws_ecs_task_definition" "flask_task_definition" {
@@ -119,8 +123,12 @@ resource "aws_ecs_service" "flask_ecs_service" {
 
   network_configuration {
     subnets          = [
-      "subnet-01b120aa2483e220a", # Update with your subnet IDs
-      "subnet-0f3af6c61caf61983"
+      "subnet-01b120aa2483e220a",
+      "subnet-0f3af6c61caf61983",
+      "subnet-0ac62e963c443c7b2",
+      "subnet-0fffd40e39db04651",
+      "subnet-08c72b3f56e7ff52f",
+      "subnet-0515a928de6d41455"
     ]
     security_groups  = [aws_security_group.ecs_sg.id]
     assign_public_ip = true
@@ -154,6 +162,20 @@ resource "aws_cloudwatch_metric_alarm" "flask_log_alarm" {
 }
 
 # Optional: Output ECS cluster and service details
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.flask_app_cluster.name
+}
+
+output "ecs_service_name" {
+  value = aws_ecs_service.flask_ecs_service.name
+}
+
+
+provider "aws" {
+  region = "us-west-1"
+}
+
+# Output ECS cluster and service details
 output "ecs_cluster_name" {
   value = aws_ecs_cluster.flask_app_cluster.name
 }

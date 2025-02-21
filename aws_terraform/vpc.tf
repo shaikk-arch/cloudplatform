@@ -1,7 +1,7 @@
 resource "aws_security_group" "ecs_sg" {
   name        = "flask-app-sg-new"
   description = "Allow HTTP traffic on port 5000"
-  vpc_id      = "vpc-0461e865c5a2055c5"  # Your VPC ID
+  vpc_id      = "vpc-094ecbccf0550e0fd"  # Your VPC ID
 
   ingress {
     from_port   = 5000

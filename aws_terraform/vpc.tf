@@ -1,7 +1,21 @@
+provider "aws" {
+  region = "us-east-1"  # Change to your preferred AWS region
+}
+
+# Create a new VPC
+resource "aws_vpc" "new_vpc" {
+  cidr_block = "10.0.0.0/16"
+  
+  tags = {
+    Name = "new-flask-vpc"
+  }
+}
+
+# Create a security group within the new VPC
 resource "aws_security_group" "ecs_sg" {
   name        = "flask-app-sg-new"
   description = "Allow HTTP traffic on port 5000"
-  vpc_id      = "vpc-094ecbccf0550e0fd"  # Your VPC ID
+  vpc_id      = aws_vpc.new_vpc.id  # Reference the new VPC
 
   ingress {
     from_port   = 5000

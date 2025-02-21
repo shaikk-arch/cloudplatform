@@ -68,32 +68,11 @@ resource "aws_ecs_cluster" "flask_app_cluster" {
   name = "flask-app-cluster"
 }
 
-# Create public subnets in the VPC
-resource "aws_subnet" "public_subnet_1" {
-  vpc_id                  = "vpc-0f4c5b29145a2ac73"  # Your VPC ID
-  cidr_block              = "10.0.1.0/24"            # Subnet CIDR block
-  availability_zone       = "us-west-1"              # Availability zone
-  map_public_ip_on_launch = true                      # Assign public IPs to instances launched in this subnet
-  tags = {
-    Name = "Public Subnet 1"
-  }
-}
-
-resource "aws_subnet" "public_subnet_2" {
-  vpc_id                  = "vpc-0f4c5b29145a2ac73"  # Your VPC ID
-  cidr_block              = "10.0.2.0/24"            # Subnet CIDR block
-  availability_zone       = "us-west-1"              # Availability zone
-  map_public_ip_on_launch = true                      # Assign public IPs to instances launched in this subnet
-  tags = {
-    Name = "Public Subnet 2"
-  }
-}
-
 # Create a new security group (allow HTTP traffic on port 5000)
 resource "aws_security_group" "ecs_sg" {
   name        = "flask-app-sg-new"
   description = "Allow HTTP traffic on port 5000"
-  vpc_id      = "vpc-0f4c5b29145a2ac73"  # Your VPC ID
+  vpc_id      = "vpc-0e726e990716c0f63"  # Your VPC ID
 
   ingress {
     from_port   = 5000
@@ -109,7 +88,6 @@ resource "aws_security_group" "ecs_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
 # Define the ECS task definition using the Docker image from the existing ECR repository
 resource "aws_ecs_task_definition" "flask_task_definition" {
   family                   = "flask-app-task"

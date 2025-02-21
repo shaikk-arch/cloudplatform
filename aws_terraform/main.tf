@@ -68,11 +68,29 @@ resource "aws_ecs_cluster" "flask_app_cluster" {
   name = "flask-app-cluster"
 }
 
+# Fetch public subnets in the VPC (dynamic selection)
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+
+  # This assumes you want to use only public subnets
+  filter {
+    name   = "tag:Type"
+    values = ["public"]
+  }
+}
+
 # Create a new security group (allow HTTP traffic on port 5000)
 resource "aws_security_group" "ecs_sg" {
   name        = "flask-app-sg-new"
   description = "Allow HTTP traffic on port 5000"
-  vpc_id      = "vpc-0f4c5b29145a2ac73"  # Your VPC ID
+  vpc_id      = data.aws_vpc.default.id  # Reference the default VPC dynamically
 
   ingress {
     from_port   = 5000
@@ -122,14 +140,7 @@ resource "aws_ecs_service" "flask_ecs_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets          = [
-      "subnet-01b120aa2483e220a",
-      "subnet-0f3af6c61caf61983",
-      "subnet-0ac62e963c443c7b2",
-      "subnet-0fffd40e39db04651",
-      "subnet-08c72b3f56e7ff52f",
-      "subnet-0515a928de6d41455"
-    ]
+    subnets          = data.aws_subnets.default.ids  # Automatically uses available subnets
     security_groups  = [aws_security_group.ecs_sg.id]
     assign_public_ip = true
   }

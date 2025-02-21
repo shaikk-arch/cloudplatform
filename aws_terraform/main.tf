@@ -72,7 +72,7 @@ resource "aws_ecs_cluster" "flask_app_cluster" {
 resource "aws_security_group" "ecs_sg" {
   name        = "flask-app-sg-new"
   description = "Allow HTTP traffic on port 5000"
-  vpc_id      = "vpc-0e726e990716c0f63"  # Your VPC ID
+  vpc_id      = "vpc-0e726e990716c0f63"  # Updated VPC ID
 
   ingress {
     from_port   = 5000
@@ -88,6 +88,7 @@ resource "aws_security_group" "ecs_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
 # Define the ECS task definition using the Docker image from the existing ECR repository
 resource "aws_ecs_task_definition" "flask_task_definition" {
   family                   = "flask-app-task"
@@ -122,11 +123,11 @@ resource "aws_ecs_service" "flask_ecs_service" {
 
   network_configuration {
     subnets          = [
-      aws_subnet.public_subnet_1.id,
-      aws_subnet.public_subnet_2.id
+      "subnet-01b120aa2483e220a", # Update with your subnet IDs
+      "subnet-0f3af6c61caf61983"
     ]
     security_groups  = [aws_security_group.ecs_sg.id]
-    assign_public_ip = true  # Ensure these subnets are public
+    assign_public_ip = true
   }
 }
 

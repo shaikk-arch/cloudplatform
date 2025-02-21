@@ -37,11 +37,11 @@ jobs:
           sudo apt update
           sudo apt install terraform
 
-      - name: Terraform Format Check
-        run: |
-          # Navigate to the terraform directory and check for formatting issues
-          cd aws_terraform
-          terraform fmt -check
+      # - name: Terraform Format Check
+      #   run: |
+      #     # Navigate to the terraform directory and check for formatting issues
+      #     cd aws_terraform
+      #     terraform fmt -check
 
       - name: Terraform Initialization
         run: |

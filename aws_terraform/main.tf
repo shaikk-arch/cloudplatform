@@ -1,5 +1,10 @@
-provider "aws" {
-  region = "us-east-1"
+terraform {
+  backend "s3" {
+    bucket = "my-9898989-123-secure-bucket-123456"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    encrypt = true
+  }
 }
 
 # Create a new VPC

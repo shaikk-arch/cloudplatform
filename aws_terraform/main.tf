@@ -1,6 +1,12 @@
-provider "aws" {
-  region = "us-east-1"
+terraform {
+  backend "s3" {
+    bucket = "my-9898989-1234-secure-bucket-456456"
+    key    = "terraform.tfstate"
+    region = "us-east-1"
+    encrypt = true
+  }
 }
+
 
 # Create a new VPC
 resource "aws_vpc" "flask_vpc" {

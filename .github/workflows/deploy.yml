@@ -20,14 +20,14 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 058264462530.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 593793029373.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
 
       - name: Build and Push Docker Image
         run: |
           cd catgifs-master
           docker build -t my-flask-app .
-          docker tag my-flask-app:latest 058264462530.dkr.ecr.us-east-1.amazonaws.com/my-flask-app:latest
-          docker push 058264462530.dkr.ecr.us-east-1.amazonaws.com/my-flask-app:latest
+          docker tag my-flask-app:latest 593793029373.dkr.ecr.us-east-1.amazonaws.com/my-flask-app:latest
+          docker push 593793029373.dkr.ecr.us-east-1.amazonaws.com/my-flask-app:latest
 
   Deploy_Terraform_plan:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 058264462530.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 593793029373.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
 
       - name: Install Terraform
         run: |
@@ -80,7 +80,7 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 058264462530.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 593793029373.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
 
       - name: Install Terraform
         run: |
@@ -115,7 +115,7 @@ jobs:
 
       - name: Login to Amazon ECR
         run: |
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 058264462530.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 593793029373.dkr.ecr.us-east-1.amazonaws.com/my-flask-app
 
       - name: Install Python and Boto3
         run: |
